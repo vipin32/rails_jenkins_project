@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        RAILS_ENV = 'test' // Set the Rails environment for testing
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -32,7 +28,7 @@ pipeline {
             steps {
                 script {
                     echo 'Running database migrations...'
-                    bat 'bundle exec rails db:migrate RAILS_ENV=${RAILS_ENV}'  // Use environment variable
+                    bat 'bundle exec rails db:migrate RAILS_ENV=test'  // Use environment variable
                 }
             }
         }
