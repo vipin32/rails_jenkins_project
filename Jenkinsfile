@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your_username/UserManagementAPI.git' // Replace with your repo URL
+                git 'https://github.com/vipin32/rails_jenkins_project.git' 
             }
         }
         
