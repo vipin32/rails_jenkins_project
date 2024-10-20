@@ -1,35 +1,63 @@
 pipeline {
     agent any
 
+    environment {
+        RAILS_ENV = 'test' // Set the Rails environment for testing
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/vipin32/rails_jenkins_project.git' 
-                
-               echo 'Building the application...'
-               bat 'ruby -v' 
-               bat 'bundle -v' 
-             
+                script {
+                    git branch: 'main', url: 'https://github.com/vipin32/rails_jenkins_project.git' 
+                    
+                    // Check Ruby and Bundler versions
+                    echo 'Checking Ruby and Bundler versions...'
+                    bat 'ruby -v'
+                    bat 'bundle -v'
+                }
             }
         }
         
         stage('Install Dependencies') {
             steps {
-                bat 'bundle install'
+                script {
+                    echo 'Installing dependencies...'
+                    bat 'bundle install'
+                }
             }
         }
         
         stage('Run Migrations') {
             steps {
-                bat 'bundle exec rails db:migrate RAILS_ENV=test'  // Run migrations for the test environment
+                script {
+                    echo 'Running database migrations...'
+                    bat 'bundle exec rails db:migrate RAILS_ENV=${RAILS_ENV}'  // Use environment variable
+                }
             }
         }
         
         stage('Run Tests') {
             steps {
-                bat 'bundle exec rspec' // Run RSpec tests
+                script {
+                    echo 'Running RSpec tests...'
+                    bat 'bundle exec rspec' // Run RSpec tests
+                }
             }
         }
         
+    }
+
+    post {
+        always {
+            echo 'Cleaning up...'
+            // Add any cleanup steps if necessary, such as removing temporary files
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed. Check the logs for details.'
+        }
     }
 }
